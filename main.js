@@ -46,6 +46,17 @@ lab5.delete('/notes/:note_name', (req, res) => {
     });
   });
 
+lab5.get('/notes', (req, res) => {
+    fs.readdir(options.cache, (err, files) => {
+      if (err) throw err;
+      const notes = files.map((file) => {
+        const data = fs.readFileSync(path.join(options.cache, file), 'utf-8');
+        return {name: path.basename(file, '.txt'), text: data };
+      });
+      res.json(notes);
+    });
+  });
+
 lab5.listen(options.port, options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}`);
 });
