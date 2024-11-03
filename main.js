@@ -36,6 +36,16 @@ lab5.put('/notes/:note_name', (req, res) => {
     });
   });
 
+lab5.delete('/notes/:note_name', (req, res) => {
+    const path_to_note = path.join(options.cache, `${req.params.note_name}.txt`);
+    fs.unlink(path_to_note, (err) => {
+      if (err) {
+        return res.status(404).send('Not found');
+      }
+      res.send('Deleted');
+    });
+  });
+
 lab5.listen(options.port, options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}`);
 });
