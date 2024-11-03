@@ -23,6 +23,19 @@ lab5.get('/notes/:note_name', (req, res) => {
   });
 });
 
+lab5.put('/notes/:note_name', (req, res) => {
+    const path_to_note = path.join(options.cache, `${req.params.note_name}.txt`);
+    fs.access(path_to_note, fs.constants.F_OK, (err) => {
+      if (err) {
+        return res.status(404).send('Not found');
+      }
+      fs.writeFile(path_to_note, req.body.text, (err) => {
+        if (err) throw err;
+        res.send('Updated');
+      });
+    });
+  });
+
 lab5.listen(options.port, options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}`);
 });
