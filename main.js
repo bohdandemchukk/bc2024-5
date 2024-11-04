@@ -16,6 +16,8 @@ program.parse(process.argv);
 const options = program.opts();
 const lab5 = express();
 lab5.use(express.json());
+lab5.use(express.static(__dirname));
+
 
 lab5.get('/notes/:note_name', (req, res) => {
   const path_to_note = path.join(options.cache, `${req.params.note_name}.txt`);
@@ -73,6 +75,12 @@ lab5.post('/write', mlt.none(), (req, res) => {
       });
     });
 });
+
+lab5.get('/UploadForm.html', (req, res) => {
+    const path_to_html = path.join(__dirname, 'UploadForm.html');
+    res.sendFile(path_to_html);
+});
+
 
 lab5.listen(options.port, options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}`);
