@@ -2,6 +2,10 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const {program} = require('commander');
+const multer = require('multer');
+
+const mlt = multer();
+
 
 program
   .requiredOption('-h, --host <host>', 'server host')
@@ -34,7 +38,7 @@ lab5.put('/notes/:note_name', (req, res) => {
         res.send('Updated');
       });
     });
-  });
+});
 
 lab5.delete('/notes/:note_name', (req, res) => {
     const path_to_note = path.join(options.cache, `${req.params.note_name}.txt`);
@@ -44,7 +48,7 @@ lab5.delete('/notes/:note_name', (req, res) => {
       }
       res.send('Deleted');
     });
-  });
+});
 
 lab5.get('/notes', (req, res) => {
     fs.readdir(options.cache, (err, files) => {
@@ -55,7 +59,20 @@ lab5.get('/notes', (req, res) => {
       });
       res.json(notes);
     });
-  });
+});
+
+lab5.post('/write', mlt.none(), (req, res) => {
+    const path_to_note = path.join(options.cache, `${req.body.note_name}.txt`);
+    fs.access(path_to_note, fs.constants.F_OK, (err) => {
+      if (!err) {
+        return res.status(400).send('Bad request');
+      }
+      fs.writeFile(path_to_note, req.body.note, (err) => {
+        if (err) throw err;
+        res.status(201).send('Created');
+      });
+    });
+});
 
 lab5.listen(options.port, options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}`);
