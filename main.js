@@ -76,8 +76,7 @@ lab5.post('/write', mlt.none(), (req, res) => {
 });
 
 lab5.get('/UploadForm.html', (req, res) => {
-    const path_to_html = path.join(__dirname, 'UploadForm.html');
-    res.sendFile(path_to_html);
+    res.sendFile(path.join(__dirname, 'UploadForm.html'));
 });
 
 
