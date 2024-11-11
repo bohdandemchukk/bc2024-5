@@ -16,7 +16,6 @@ program.parse(process.argv);
 const options = program.opts();
 const lab5 = express();
 lab5.use(express.json());
-lab5.use(express.static(__dirname));
 
 
 lab5.get('/notes/:note_name', (req, res) => {
@@ -57,7 +56,7 @@ lab5.get('/notes', (req, res) => {
       if (err) throw err;
       const notes = files.map((file) => {
         const data = fs.readFileSync(path.join(options.cache, file), 'utf-8');
-        return {name: path.basename(file, '.txt'), text: data };
+        return {name: path.basename(file), text: data };
       });
       res.json(notes);
     });
