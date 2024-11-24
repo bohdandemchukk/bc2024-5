@@ -52,15 +52,20 @@ lab5.delete('/notes/:note_name', (req, res) => {
 });
 
 lab5.get('/notes', (req, res) => {
-    fs.readdir(options.cache, (err, files) => {
-      if (err) throw err;
-      const notes = files.map((file) => {
+  fs.readdir(options.cache, (err, files) => {
+    if (err) {
+      return res.status(500).send('Internal Server Error');
+    }
+    const notes = files
+      .filter((file) => file.endsWith('.txt'))
+      .map((file) => {
         const data = fs.readFileSync(path.join(options.cache, file), 'utf-8');
-        return {name: path.basename(file), text: data };
+        return { name: path.basename(file, '.txt'), text: data };
       });
-      res.json(notes);
-    });
+    res.json(notes);
+  });
 });
+
 
 lab5.post('/write', mlt.none(), (req, res) => {
     const path_to_note = path.join(options.cache, `${req.body.note_name}.txt`);
